@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  haproxy:
+    container_name: haproxy
+    image: haproxytech/haproxy-alpine:latest
+    ports:
+      - 80:80
+      - 443:443
+      - 8404:8404
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      # New line added here
+      - certs:/usr/local/etc/haproxy/certs/
+    networks:
+      - haproxy_net
+    restart: always
+    environment:
+      ENDPOINT: '${ENDPOINT}'
+
+  ############# New section added ##############
+  reverse-proxy-https-helper:
+      image: alpine:latest
+      command: sh -c "cd /etc/ssl/traefik
+        && wget traefik.me/cert.pem -O cert.pem
+        && wget traefik.me/privkey.pem -O privkey.pem
+        && cat cert.pem privkey.pem > traefik.me.pem"
+      volumes:
+        - certs:/etc/ssl/traefik
+  ####################################################
+
+networks:
+  haproxy_net:
+    name: haproxy_net
+    driver: bridge
+  
+############# New section added ##############
+volumes:
+  certs:
+##############################################

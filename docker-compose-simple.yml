@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  guacamole:
+    container_name: guacamole
+    image: jwetzell/guacamole
+    environment:
+      - EXTENSIONS=auth-sso-openid
+    volumes:
+      - ./postgres:/config
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+
+volumes:
+  postgres:
+    driver: local
+
+# docker compose -f docker-compose-simple.yml up -d && docker compose logs -f
+# sudo nano postgres/guacamole/guacamole.properties
+# 
+# // Append info inside configuration files
+# openid-authorization-endpoint: https://auth.mygreatdomain.org/application/o/authorize/
+# openid-jwks-endpoint: https://auth.mygreatdomain.org/application/o/guacamole/jwks/
+# openid-issuer: https://auth.mygreatdomain.org/application/o/guacamole/
+# openid-client-id: some-super-Long-5trinG-0f-Ch4rac7ers
+# openid-redirect-uri: https://guac.mygreatdomain.org
+# openid-groups-claim-type: admins
+# extension-priority: openid
+# enable-clipboard-integration: true
+#
+# docker compose restart
+# 
+# login with guacadmin/guacadmin
+# Reference: https://www.youtube.com/watch?v=WIyAGuMbjmY&t=547s&ab_channel=AwesomeOpenSource
+# https://wiki.opensourceisawesome.com/books/guacamole-rdp/page/setup-oidc-for-guacamole

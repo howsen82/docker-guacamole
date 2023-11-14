@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  guacamole:
+    container_name: guacamole
+    image: flcontainers/guacamole
+    environment:
+      - TZ=Asia/Kuching
+      - EXTENSIONS=auth-totp,auth-ldap,auth-jdbc-sqlserver,auth-quickconnect
+    volumes:
+      - postgres:/config
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres:
+    driver: local
